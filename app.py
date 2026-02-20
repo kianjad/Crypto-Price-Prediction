@@ -68,7 +68,7 @@ h1 {
 </style>
 """, unsafe_allow_html=True)
 
-# ── Core functions ────────────────────────────────────────────────────────────
+# Core functions
 
 def get_spot_price(currency='BTC'):
     url  = "https://www.deribit.com/api/v2/public/get_index_price"
@@ -176,13 +176,13 @@ def cached_spot(asset):
 def cached_expiries(asset):
     return get_available_expiries(asset)
 
-# ── Header ────────────────────────────────────────────────────────────────────
+# Header
 
 st.title("Crypto Risk-Neutral Density")
 st.markdown("Extracting market-implied price distributions from live options data · Live data")
 st.markdown("---")
 
-# ── Controls row ──────────────────────────────────────────────────────────────
+# Controls row
 
 col1, col2 = st.columns([1, 2])
 
@@ -196,7 +196,7 @@ coin_name  = "bitcoin" if asset == "BTC" else "ethereum"
 strike_min = 40000  if asset == "BTC" else 800
 strike_max = 140000 if asset == "BTC" else 4000
 
-# ── Spot price ────────────────────────────────────────────────────────────────
+# Spot price
 
 try:
     S = cached_spot(asset)
@@ -207,7 +207,7 @@ except Exception as e:
 st.caption(f"{asset} current price: **${S:,.2f}**")
 st.markdown("")
 
-# ── Q vs P Comparison ─────────────────────────────────────────────────────────
+# Q vs P Comparison
 
 if plot_type == "Q vs P Comparison":
 
@@ -304,7 +304,7 @@ if plot_type == "Q vs P Comparison":
                 unsafe_allow_html=True
             )
 
-# ── 3D Surface ────────────────────────────────────────────────────────────────
+# 3D Surface
 
 else:
     st.caption("Fetches all expiries sequentially — allow ~2 minutes.")
@@ -387,7 +387,7 @@ else:
         st.plotly_chart(fig, use_container_width=True)
         st.caption(f"Surface built from {len(results)} expiries.")
 
-# ── Footer ────────────────────────────────────────────────────────────────────
+# Footer
 
 st.markdown(
     "<div class='footer'>Data: Deribit · CoinGecko &nbsp;·&nbsp; © 2026</div>",
