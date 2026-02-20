@@ -357,7 +357,7 @@ else:
         fig = go.Figure(data=[go.Surface(
             x=strike_grid, y=days_fine, z=Z_interp,
             name='RND Surface',
-            colorscale='Viridis', reversescale=True,
+            colorscale='Viridis',
             opacity=0.92,
             contours=dict(z=dict(show=True, usecolormap=True,
                                  highlightcolor='white', project_z=True))
