@@ -25,7 +25,7 @@ html, body, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
 
 h1 {
     font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 22px !important;
+    font-size: 28px !important;
     color: #1a1a1a;
     letter-spacing: -0.02em;
 }
@@ -178,7 +178,7 @@ def cached_expiries(asset):
 # ── Header ────────────────────────────────────────────────────────────────────
 
 st.title("Crypto Risk-Neutral Density")
-st.markdown("Market-implied probability distributions from live Deribit options · Breeden-Litzenberger")
+st.markdown("Extracting market-implied price distributions from live options data · Live data")
 st.markdown("---")
 
 # ── Controls row ──────────────────────────────────────────────────────────────
