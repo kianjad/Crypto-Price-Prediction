@@ -271,6 +271,7 @@ if plot_type == "Q vs P Comparison":
             margin=dict(l=60, r=40, t=60, b=60)
         )
         st.plotly_chart(fig, use_container_width=True)
+        st.caption("Q-measure derived from options prices via Breeden-Litzenberger · P-measure estimated from 365 days of historical log-returns")
 
         st.markdown("**Distribution statistics**")
         stats_df = pd.DataFrame({
@@ -296,7 +297,7 @@ if plot_type == "Q vs P Comparison":
         vrp = rnd_stats['mean'] - rwd_stats['mean']
         st.caption(f"Variance risk premium (Q mean − P mean): **${vrp:+,.0f}**")
 
-        if mu < 0:
+        if mu < 0 and asset == 'ETH':
             st.markdown(
                 f"<div class='mu-warning'>⚠ Historical mu = {mu*100:.1f}% (trailing 365 days). "
                 f"ETH has had a significant drawdown over this window, depressing the P-measure mean. "
