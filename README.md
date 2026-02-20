@@ -1,3 +1,5 @@
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://crypto-price-predictions.streamlit.app/)
+
 # Crypto Price Prediction
 
 Extracts the **market-implied probability distribution** of future Bitcoin and Ethereum prices from live Deribit options data using the Breeden-Litzenberger theorem. Compares these risk-neutral (Q-measure) densities against real-world (P-measure) lognormal densities estimated from historical returns, and visualizes the full term structure as an interactive 3D surface across all expiries.
