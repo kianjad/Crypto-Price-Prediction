@@ -179,7 +179,7 @@ def cached_expiries(asset):
 # Header
 
 st.title("Crypto Risk-Neutral Density")
-st.markdown("Extracting market-implied price distributions from live options data · Live data")
+st.markdown("Extracting market-implied and historical price distributions for BTC & ETH · Live Deribit data")
 st.markdown("---")
 
 # Controls row
