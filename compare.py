@@ -3,9 +3,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 from datetime import date
+from scipy.integrate import trapezoid
 from data import get_option_chain
 from density import compute_rnd
 from historical import get_historical_prices, compute_log_return_params, get_realworld_density
+
 
 def get_spot_price(currency='BTC'):
     url = "https://www.deribit.com/api/v2/public/get_index_price"
@@ -28,12 +30,12 @@ rwd          = get_realworld_density(S, T, mu, sigma,
                                      strike_min=strike_min, strike_max=strike_max)
 
 def density_stats(strikes, density):
-    mean = np.trapz(strikes * density, strikes)
-    var  = np.trapz((strikes - mean)**2 * density, strikes)
+    mean = trapezoid(strikes * density, strikes)
+    var  = trapezoid((strikes - mean)**2 * density, strikes)
     std  = np.sqrt(var)
-    skew = np.trapz(((strikes - mean)/std)**3 * density, strikes)
-    kurt = np.trapz(((strikes - mean)/std)**4 * density, strikes) - 3
-    cdf  = np.array([np.trapz(density[:i+1], strikes[:i+1]) for i in range(len(strikes))])
+    skew = trapezoid(((strikes - mean)/std)**3 * density, strikes)
+    kurt = trapezoid(((strikes - mean)/std)**4 * density, strikes) - 3
+    cdf  = np.array([trapezoid(density[:i+1], strikes[:i+1]) for i in range(len(strikes))])
     p5   = strikes[np.searchsorted(cdf, 0.05)]
     p95  = strikes[np.searchsorted(cdf, 0.95)]
     return dict(mean=mean, std=std, skew=skew, kurt=kurt, p5=p5, p95=p95)

@@ -1,6 +1,8 @@
 import requests
 import numpy as np
 import pandas as pd
+from scipy.integrate import trapezoid
+
 
 def get_historical_prices(coin='bitcoin', days=365):
     """
@@ -62,7 +64,7 @@ def get_realworld_density(S, T, mu, sigma, strike_min=40000, strike_max=140000, 
     density = norm.pdf((np.log(K_grid) - mu_logprice) / sigma_logprice) / (K_grid * sigma_logprice)
 
     # Normalize
-    density /= np.trapz(density, K_grid)
+    density /= trapezoid(density, K_grid)
 
     return pd.DataFrame({'strike': K_grid, 'density': density})
 

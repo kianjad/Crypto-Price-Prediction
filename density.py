@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import UnivariateSpline
 from scipy.stats import norm
+from scipy.integrate import trapezoid
+
 
 def black_scholes_call(S, K, T, r, sigma):
     """
@@ -50,6 +52,6 @@ def compute_rnd(df, S, T, r=0.05, strike_min=40000, strike_max=140000):
 
     density = np.exp(r * T) * d2C_dK2
     density = np.clip(density, 0, None)
-    density /= np.trapz(density, K_grid)
+    density /= trapezoid(density, K_grid)
 
     return pd.DataFrame({'strike': K_grid, 'density': density})

@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 from datetime import date
+from scipy.integrate import trapezoid
 from scipy.interpolate import UnivariateSpline, interp1d
 from scipy.stats import norm
 
@@ -124,7 +125,7 @@ def compute_rnd(df, S, T, r=0.05, strike_min=40000, strike_max=140000):
     call_spline = UnivariateSpline(K_grid, call_grid, k=4, s=0)
     density     = np.exp(r * T) * call_spline.derivative(n=2)(K_grid)
     density     = np.clip(density, 0, None)
-    density    /= np.trapz(density, K_grid)
+    density    /= trapezoid(density, K_grid)
     return pd.DataFrame({'strike': K_grid, 'density': density})
 
 def get_historical_prices(coin='bitcoin', days=365):
@@ -147,16 +148,16 @@ def get_realworld_density(S, T, mu, sigma, strike_min=40000, strike_max=140000):
     mu_log    = np.log(S) + mu * T
     sigma_log = sigma * np.sqrt(T)
     density   = norm.pdf((np.log(K_grid) - mu_log) / sigma_log) / (K_grid * sigma_log)
-    density  /= np.trapz(density, K_grid)
+    density  /= trapezoid(density, K_grid)
     return pd.DataFrame({'strike': K_grid, 'density': density})
 
 def density_stats(strikes, density):
-    mean = np.trapz(strikes * density, strikes)
-    var  = np.trapz((strikes - mean)**2 * density, strikes)
+    mean = trapezoid(strikes * density, strikes)
+    var  = trapezoid((strikes - mean)**2 * density, strikes)
     std  = np.sqrt(var)
-    skew = np.trapz(((strikes - mean)/std)**3 * density, strikes)
-    kurt = np.trapz(((strikes - mean)/std)**4 * density, strikes) - 3
-    cdf  = np.array([np.trapz(density[:i+1], strikes[:i+1]) for i in range(len(strikes))])
+    skew = trapezoid(((strikes - mean)/std)**3 * density, strikes)
+    kurt = trapezoid(((strikes - mean)/std)**4 * density, strikes) - 3
+    cdf  = np.array([trapezoid(density[:i+1], strikes[:i+1]) for i in range(len(strikes))])
     p5   = strikes[np.searchsorted(cdf, 0.05)]
     p95  = strikes[np.searchsorted(cdf, 0.95)]
     return dict(mean=mean, std=std, skew=skew, kurt=kurt, p5=p5, p95=p95)

@@ -6,6 +6,8 @@ from datetime import date
 from data import get_option_chain
 from density import compute_rnd
 from historical import get_historical_prices, compute_log_return_params, get_realworld_density
+from scipy.integrate import trapezoid
+
 
 def get_spot_price(currency='ETH'):
     url = "https://www.deribit.com/api/v2/public/get_index_price"
@@ -74,12 +76,12 @@ print(f"ETH annualized mu: {mu*100:.1f}%  sigma: {sigma*100:.1f}%")
 # Summary statistics
 
 def density_stats(strikes, density):
-    mean = np.trapz(strikes * density, strikes)
-    var  = np.trapz((strikes - mean)**2 * density, strikes)
+    mean = trapezoid(strikes * density, strikes)
+    var  = trapezoid((strikes - mean)**2 * density, strikes)
     std  = np.sqrt(var)
-    skew = np.trapz(((strikes - mean)/std)**3 * density, strikes)
-    kurt = np.trapz(((strikes - mean)/std)**4 * density, strikes) - 3
-    cdf  = np.array([np.trapz(density[:i+1], strikes[:i+1]) for i in range(len(strikes))])
+    skew = trapezoid(((strikes - mean)/std)**3 * density, strikes)
+    kurt = trapezoid(((strikes - mean)/std)**4 * density, strikes) - 3
+    cdf  = np.array([trapezoid(density[:i+1], strikes[:i+1]) for i in range(len(strikes))])
     p5   = strikes[np.searchsorted(cdf, 0.05)]
     p95  = strikes[np.searchsorted(cdf, 0.95)]
     return dict(mean=mean, std=std, skew=skew, kurt=kurt, p5=p5, p95=p95)
