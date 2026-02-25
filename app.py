@@ -7,6 +7,7 @@ from datetime import date
 from scipy.integrate import trapezoid
 from scipy.interpolate import UnivariateSpline, interp1d
 from scipy.stats import norm
+import time
 
 st.set_page_config(
     page_title="Crypto Risk-Neutral Density",
@@ -130,9 +131,13 @@ def compute_rnd(df, S, T, r=0.05, strike_min=40000, strike_max=140000):
 
 def get_historical_prices(coin='bitcoin', days=365):
     url  = f"https://api.coingecko.com/api/v3/coins/{coin}/market_chart"
-    resp = requests.get(url, params={"vs_currency": "usd", "days": days, "interval": "daily"},
-                        headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-    data = resp.json()
+    for attempt in range(3):
+        resp = requests.get(url, params={"vs_currency": "usd", "days": days, "interval": "daily"},
+                            headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+        data = resp.json()
+        if 'prices' in data:
+            break
+        time.sleep(2)
     if 'prices' not in data:
         raise ValueError(f"CoinGecko error: {data}")
     prices         = pd.DataFrame(data['prices'], columns=['timestamp', 'price'])
