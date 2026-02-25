@@ -8,7 +8,7 @@ Extracts the **market-implied probability distribution** of future Bitcoin and E
 
 ## What This Project Does
 
-Options markets encode the collective beliefs of market participants about future asset prices. By observing how implied volatility varies across strikes — the **volatility smile** — we can recover the full probability distribution the market is pricing in, without assuming any particular model.
+Options markets encode the collective beliefs of market participants about future asset prices. By observing how implied volatility varies across strikes (the **volatility smile**) we can recover the full probability distribution the market is pricing in, without assuming any particular model.
 
 This project does that in three steps:
 
@@ -16,7 +16,7 @@ This project does that in three steps:
 2. **Applies Breeden-Litzenberger** to extract the risk-neutral density (Q-measure) for each expiry
 3. **Estimates the real-world density** (P-measure) from historical log-returns via CoinGecko, and compares it to the market-implied one
 
-The gap between Q and P is economically meaningful — it reflects the **variance risk premium** and crash risk aversion embedded in options prices.
+The gap between Q and P is economically meaningful, it reflects the **variance risk premium** and crash risk aversion embedded in options prices.
 
 ---
 
@@ -147,13 +147,11 @@ Spot prices are fetched live from Deribit's index price API. Historical prices a
 
 ## Key Design Decisions
 
-**OTM-only options for vol surface fitting:** Deep ITM options have wide bid-ask spreads and low liquidity. Using only OTM calls (above spot) and OTM puts (below spot) gives a cleaner, more reliable vol smile to differentiate.
-
 **Spline smoothing parameter:** The smoothing factor `s = len(strikes) * 0.001` balances capturing the smile shape without overfitting to noisy quotes. The RND is sensitive to this — too stiff loses the smile, too loose introduces oscillation artifacts in the tails.
 
 **Normalization:** The raw second derivative is normalized to integrate to 1 over the strike range, making the densities directly comparable across expiries and assets.
 
-**Live spot price:** Spot is fetched from Deribit's `get_index_price` endpoint at runtime so the density and annotations always reflect current market conditions.
+**Live current price:** Current price is fetched from Deribit's `get_index_price` endpoint at runtime so the density and annotations always reflect current market conditions.
 
 ---
 
