@@ -129,4 +129,18 @@ fig.update_layout(
     margin=dict(l=20, r=20, t=60, b=20)
 )
 
+import json
+
+snapshot = {
+    "strike_grid": strike_grid.tolist(),
+    "days_fine":   days_fine.tolist(),
+    "Z_interp":    Z_interp.tolist(),
+    "spot":        S,
+    "generated":   "2026-02-19"
+}
+with open("surface_snapshot.json", "w") as f:
+    json.dump(snapshot, f)
+
+print("Snapshot saved to surface_snapshot.json")
+
 fig.show()
